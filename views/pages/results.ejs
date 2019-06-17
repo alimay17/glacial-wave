@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <% include ../partials/header.ejs %>
+</head>
+
+<body>
+  <div class="container">
+    <h2>Results of your Math</h2>
+    <p><%= math.op1 %> <%= math.job %> <%= math.op2 %> = <%= math.result %></p>
+    <p>
+      click <a href="/math_service">Here</a> to see the math as a JSON Object</a>
+    </p>
+    <a href="/math.html">Back to Home</a>
+  </div>
+
+</body>
+</html>
