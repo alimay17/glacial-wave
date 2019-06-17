@@ -11,9 +11,3 @@ npm-debug.log
 Dockerfile
 docker-compose.yml
 package-lock.json
-
-# images
-images
-.png
-.jpg
-.jpeg
