@@ -23,6 +23,6 @@
     "morgan": "~1.9.1"
   },
   "engines": {
-    "node": "16.x"
+    "node": "10.x"
   }
 }
