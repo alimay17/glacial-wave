@@ -33,10 +33,12 @@ router.get('/getRate', function(req, res){
     weight: req.query.weight,
     type: req.query.type
   }
-  //if(req.query.weight){
-    res.render('pages/pRate', {rate: rates.calcRate(data)});
-  //}
-  //else res.render('pages/index');
+  console.log("This is getRate:" + data);
+  var cRate = rates.calcRate(data);
+  if(req.query.weight){
+    res.render('pages/pRate', {rate: cRate});
+  }
+  else res.render('pages/index');
 })
 
 

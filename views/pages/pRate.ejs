@@ -9,15 +9,12 @@
 
 <div class="jumbotron text-center">
   <div class="container">
-    <h1>Your postage results:</h1>
+    <p>The total price to send your mail is: $<%= rate.rate %></p>
+    <a type="button" class="btn btn-lg btn-default" href="/html/prove09.html"><span class="glyphicon glyphicon-flash"></span>Postage Calculator</a>
+    <a type="button" class="btn btn-lg btn-primary" href="/"></span>Home</a>
   </div>
 </div>
 <div class="container">
-  <hr>
-  <div class="row">
-      <%= rate %>
-  </div> <!-- row -->
-    <hr/>
     <% include ../partials/footer.ejs %>
 </div>
 

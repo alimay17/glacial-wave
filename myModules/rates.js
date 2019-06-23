@@ -1,6 +1,8 @@
-exports.calcRate = calcRate
+exports.calcRate = calcRate;
 
 function calcRate(data){
+
+  // lookup tables for calculating rate
   var stamped = {
     1: .55,
     2: .70,
@@ -46,44 +48,41 @@ function calcRate(data){
     13: 5.71
   }
 
+
+  // switch to calculate the postage rate
+
   switch(data.type) {
-    case 1:
+    case '1':
       for (w in stamped) {
-        console.log(stamped[w]);
         if (w == data.weight){
-          data.rate = stamped[w];
+          data.rate = stamped[w].toFixed(2);
+          return data;
         }
       }
-    break;
-    case 2:
+    case '2':
       for (w in metered) {
-        console.log(metered[w]);
         if (w == data.weight){
-          data.rate = metered[w];
+          data.rate = metered[w].toFixed(2);
+          return data;
         }
       }
-    break;
-    case 3:
+    case '3':
       for (w in flats) {
-        console.log(flats[w]);
         if (w == data.weight){
-          data.rate = flats[w];
+          data.rate = flats[w].toFixed(2);
+          return data;
         }
       }
-    break;
-    case 4:
+    case '4':
       for (w in package) {
-        console.log(package[w]);
         if (w == data.weight){
-          data.rate = package[w];
+          data.rate = package[w].toFixed(2);
+          return data;
         }
       }
-    break;
+    default:
+      data.rate = 0;
+      return data;
   }
-
-  console.log(data)
-  return data;
 }
-
-calcRate({weight:4, type: 4});
 
