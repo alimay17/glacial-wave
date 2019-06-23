@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Prove09</title>
+  <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="../stylesheets/main.css" />
+</head>
+<body>
+<div class="jumbotron text-center">
+  <div class="container">
+    <h1>Prove 09 - Postal Rate Calculator</h1>
+    <p>This is the student project directory of Alice S.<br/>
+       made with NodeJS, Express, and the CSS Bootstrap framework.</p>
+    <a type="button" class="btn btn-lg btn-default" href="/db"><span class="glyphicon glyphicon-flash"></span>Current Project</a>
+    <a type="button" class="btn btn-lg btn-primary" href="/"></span>Home</a>
+  </div>
+</div>
+<div class="container">
+  <hr>
+  <div class="row">
+    <p>To get your postage please enter the item weight and type of mail</p>
+    <form action="/getRate" method="GET">
+      <span>Item weight</span>
+      <input type="number" name="weight"/><br/>
+      <span>Stamped Leter</span>
+      <input type="radio" name="type" value="1"/>
+      <span>Metered Letter</span>
+      <input type="radio" name="type" value="2"/>
+      <span>Large Envelopes</span>
+      <input type="radio" name="type" value="3"/>
+      <span>First-Class Package Service - Retail</span>
+      <input type="radio" name="type" value="4"/><br/>
+      <input type="submit" value="Submit"/>
+    </form>
+  </div> <!-- row -->
+  <hr/>
+  <div class="alert alert-info text-center" role="alert">
+   Updated 17 June 2019 - Alice S.
+ </div>
+</div>
+
+
+</body>
+</html>
