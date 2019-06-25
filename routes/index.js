@@ -1,9 +1,14 @@
 var express = require('express');
 var router = express.Router();
+var pg = require('pg');
+var conString = 'postgres://@localhost/node_demo';
+
+//process.env.DATABASE_URL
+
 const { Pool } = require('pg')
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: true
+  connectionString: conString,
+  ssl: false
 });
 
 /* GET home page. */
@@ -15,8 +20,9 @@ router.get('/', function(req, res, next) {
 router.get('/db', async (req, res) => {
   try{
     const client = await pool.connect()
-    const result = await client.query('SELECT * FROM test_table');
+    const result = await client.query('SELECT * FROM posts');
     const results = { 'results': (result) ? result.rows : null };
+    console.log('connected to db');
     res.render('pages/db', results);
     client.release();
   } catch(err) {
