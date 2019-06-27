@@ -29,7 +29,6 @@ router.get('/db', async (req, res) => {
   }
 })
 
-
 // get rates
 router.get('/getRate', function(req, res){
   var rates = require('../myModules/rates');
@@ -44,6 +43,5 @@ router.get('/getRate', function(req, res){
   }
   else res.render('pages/index');
 })
-
 
 module.exports = router;
