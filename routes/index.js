@@ -9,28 +9,43 @@ const pool = new Pool({
   ssl: false
 });
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
+/* GET assignments home. */
+router.get('/', (req, res, next) => {
   res.render('pages/index');
 });
 
-// get db
-router.get('/db', async (req, res) => {
+// splash page
+router.get('/sphinxmanager', (req, res, next) => {
+  res.render('pages/splash.ejs');
+});
+
+// login
+router.post('/login', (req, res, next) => {
+  res.redirect('/sphinxhome');
+});
+
+// employer home
+router.get('/sphinxhome', async (req, res) => {
   try{
     const client = await pool.connect()
     const result = await client.query('SELECT * FROM employees');
     const results = { 'results': (result) ? result.rows : null };
     console.log('connected to db');
-    res.render('pages/db', results);
+    res.render('pages/sphinxHome.ejs', results);
     client.release();
   } catch(err) {
     console.log(err);
     res.send("Error " + err);
   }
+});
+
+// employees
+router.get('/employees', (req, res) => {
+  res.render('pages/employees');
 })
 
 // get rates
-router.get('/getRate', function(req, res){
+router.get('/getRate', (req, res) => {
   var rates = require('../myModules/rates');
   var data = {
     weight: req.query.weight,
@@ -42,6 +57,6 @@ router.get('/getRate', function(req, res){
     res.render('pages/pRate', {rate: cRate});
   }
   else res.render('pages/index');
-})
+});
 
 module.exports = router;

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sphinx Manager</title>
+  <% include ../partials/header.ejs %>
+</head>
+<body>
+
+  <% include ../partials/nav.ejs %>
+
+<div class="jumbotron text-center">
+  <div class="container">
+    <h1>Sphinx Manager</h1>
+    <p>Tools for employee managment and scheduling</p>
+    <button class="btn btn-lg btn-default" data-toggle="collapse" data-target="#changeForm"><span class="glyphicon glyphicon-flash"></span>Change Shedule</button>
+    <a type="button" class="btn btn-lg btn-primary" href="/employees"></span>Manage Employees</a>
+  </div>
+</div>
+<div class="container">
+  <h1>Shedule</h1>
+  <p><i>Currently under construction - some functionality is broken</i></p>
+  <div class="row">
+    <div id="employeeTable" class="col-md-6">
+      <table>
+        <tr>
+          <th>Employee Name</th>
+          <th>Day</th>
+          <th>Shift</th>
+        </tr>
+        <% results.forEach(function(r) { %>
+          <tr>
+          <td><%= r.username %></td>
+          </tr>
+      <% }); %>
+      </table>
+    </div>
+    </div> <!--End Row-->
+  <div class="row">
+    <div id="changeForm" class="collapse">
+        <hr/>
+      This will be tools to change the schedule
+    </div>
+    </div>
+    <% include ../partials/footer.ejs %>
+</div>
+</body>
+</html>
