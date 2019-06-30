@@ -8,13 +8,16 @@ CREATE TABLE employees (
     REFERENCES employer (id) MATCH SIMPLE
 );
 
-CREATE TABLE employer
-(
+CREATE TABLE employer (
   id serial primary key,
   username varchar(60),
   password varchar(60),
   CONSTRAINT employeer_pkey PRIMARY KEY (id)
 );
+
+CREATE TABLE schedule_employee (
+  
+)
 /*
 CREATE TABLE posts (
   id serial primary key,
