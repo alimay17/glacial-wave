@@ -11,8 +11,7 @@ CREATE TABLE employees (
 CREATE TABLE employer (
   id serial primary key,
   username varchar(60),
-  password varchar(60),
-  CONSTRAINT employeer_pkey PRIMARY KEY (id)
+  password varchar(60)
 );
 
 CREATE TABLE schedule_employee (
