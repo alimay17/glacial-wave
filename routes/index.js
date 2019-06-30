@@ -5,7 +5,7 @@ var conString = 'postgres://@localhost/project_njs'; // for local access
 
 const { Pool } = require('pg')
 const pool = new Pool({
-  connectionString: 'DATABASE_URL',
+  connectionString: process.env.DATABASE_URL,
   ssl: true
 });
 
