@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sphinx Manager</title>
+  <% include ../partials/header.ejs %>
+</head>
+<body>
+
+  <% include ../partials/nav.ejs %>
+
+<div class="jumbotron text-center">
+  <div class="container">
+    <h1>Sphinx Manager</h1>
+    <p>Tools for employee managment and scheduling</p>
+    <button class="btn btn-lg btn-default" data-toggle="collapse" id="signIn" data-target="#loginForm"><span class="glyphicon glyphicon-flash"></span>Sign In</button>
+  </div>
+</div>
+<div class="container">
+  <p><i>Currently under construction - some functionality is broken</i></p>
+  <div class="row">
+    <div id="loginForm" class="col-md-6, collapse">
+      <% include ../partials/login.ejs %>
+    </div>
+    <% include ../partials/footer.ejs %>
+</div>
+</body>
+</html>
