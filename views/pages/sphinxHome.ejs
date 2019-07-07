@@ -24,24 +24,40 @@
       <table>
         <tr>
           <th>Employee Name</th>
+          <th>Position</th>
           <th>Day</th>
           <th>Shift</th>
         </tr>
         <% results.forEach(function(r) { %>
           <tr>
           <td><%= r.username %></td>
+          <td><%= r.job %></td>
+          <td><%= r.to_char%></td>
+          <td><%= r.shift%></td>
           </tr>
       <% }); %>
       </table>
     </div>
     </div> <!--End Row-->
   <div class="row">
-    <div id="changeForm" class="collapse">
-        <hr/>
-      This will be tools to change the schedule
+    <div id="changeForm" class="collapse"><hr/>
+      <button class="btn btn-md btn-primary" onclick="editShift()">Add Employee to Shift</button>
+      <button class="btn btn-md btn-primary" data-toggle="collapse" data-target="#changeForm">Add New Shift</button>
     </div>
+    <div id="newShift" class="collapse"><% include ../partials/newShift.ejs %></div>
     </div>
     <% include ../partials/footer.ejs %>
 </div>
+
+
+<script>
+    function editShift() {
+    console.log("This is editSchedule");
+      //$.get("/detail", {employee:id},
+      //function(data, status){
+      //$('#detail').html(data);
+    //});
+}
+  </script>
 </body>
 </html>

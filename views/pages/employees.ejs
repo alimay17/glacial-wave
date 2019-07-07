@@ -1,18 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Sphinx Manager</title>
+  <title>Sphinx Manager</title>
   <% include ../partials/header.ejs %>
-  <script>
-      $(document).ready(function() {
-        console.log("JS Script")
-        $('#changeForm').hide();
-      })
-      function getForm() {
-        console.log('Getting login form');
-        $('#changeForm').show();
-      }
-      </script>
 </head>
 <body>
 
@@ -22,13 +12,51 @@
   <div class="container">
     <h1>Sphinx Manager</h1>
     <p>Tools for employee managment and scheduling</p>
-    <a type="button" class="btn btn-lg btn-primary" href="/sphinxhome"></span>Sphinx Home</a>
+    <a type="button" class="btn btn-lg btn-primary" href="/sphinxhome"></span>Return to Scheduling</a>
+    <button class="btn btn-lg btn-default" data-toggle="collapse" data-target="#addNew"><span class="glyphicon glyphicon-flash"></span>Add New Employee</button>
   </div>
 </div>
 <div class="container">
-  <h1>Employee Management</h1>
-  <p>This page is under construction. Please check back later</p>
+  <h1>Employee Managment</h1>
+  <p><i>Currently under construction - some functionality is broken</i></p>
+  <p>Click on an employee's name to edit their details.</p>
+  <div class="row">
+    <div id="employeeTable" class="col-md-6">
+      <table>
+        <tr>
+          <th>Employee Name</th>
+          <th>Position</th>
+          <th>Wage</th>
+          <th>Date of Hire</th>
+        </tr>
+        <% results.forEach(function(r) { %>
+          <tr>
+          <td><a href="#" onclick="getDetail(<%= r.id %>)"><%= r.username %></a></td>
+          <td><%= r.job%></td>
+          <td>$<%= r.wage%></td>
+          <td><%= r.to_char%></td>
+
+          </tr>
+      <% }); %>
+      </table>
+    </div>
+  </div> <!--End Row-->
+  <div id="detail"></div>
+  <div id="addNew" class="collapse">
+    <h2>Add New Employee</h2>
+    <% include ../partials/addNew.ejs %>
+  </div>
     <% include ../partials/footer.ejs %>
 </div>
+
+<script>
+    function getDetail(id) {
+    console.log("This is getDetail and it Works! Cause here is the id: " + id);
+      $.get("/detail", {employee:id},
+      function(data, status){
+      $('#detail').html(data);
+    });
+}
+  </script>
 </body>
 </html>

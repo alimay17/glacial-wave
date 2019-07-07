@@ -14,9 +14,17 @@ CREATE TABLE employer (
   password varchar(60)
 );
 
-CREATE TABLE schedule_employee (
-  
-)
+CREATE TABLE shift_employee (
+ id serial primary key,
+ shift varchar(32),
+ employee_id integer,
+ CONSTRAINT employee_id FOREIGN KEY (employee_id)
+  REFERENCES employees (id) MATCH SIMPLE 
+);
+
+CREATE TABLE shift {
+
+}
 /*
 CREATE TABLE posts (
   id serial primary key,
