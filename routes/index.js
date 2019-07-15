@@ -11,8 +11,8 @@ var postEncoding = express.urlencoded({extended: true});
 // db connection
 const { Pool } = require('pg')
 const pool = new Pool({
-  connectionString: local,
-  ssl: false
+  connectionString: heroku,
+  ssl: true
 });
 
 /* GET assignments home. */
@@ -76,17 +76,18 @@ router.get('/detail', (req, res) => {
 
 // change shift
 router.get('/changeShift', async (req, res) => {
-  var some = "update shift_employee set shift = 'pm' where employee_id = 1";
+  var query = "select id, username, wage, job, to_char(hire_date, 'Mon dd yyyy') from employees";
   try{
     const client = await pool.connect()
-    const result = await client.query(some);
+    const result = await client.query(query);
+    const results = { 'results': (result) ? result.rows : null };
     console.log('Update sucessfull');
+    res.send(results);
     client.release();
   } catch(err) {
     console.log(err);
     res.send("Error " + err);
   }
-  res.redirect('/sphinxhome');
 });
 
 // add new employee

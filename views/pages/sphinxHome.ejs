@@ -44,7 +44,9 @@
       <button class="btn btn-md btn-primary" onclick="editShift()">Add Employee to Shift</button>
       <button class="btn btn-md btn-primary" data-toggle="collapse" data-target="#changeForm">Add New Shift</button>
     </div>
-    <div id="newShift" class="collapse"><% include ../partials/newShift.ejs %></div>
+    <div id="display"></div>
+    <div id="newShift" class="collapse"><% include ../partials/newShift.ejs %>
+    </div>
     </div>
     <% include ../partials/footer.ejs %>
 </div>
@@ -53,10 +55,11 @@
 <script>
     function editShift() {
     console.log("This is editSchedule");
-      //$.get("/detail", {employee:id},
-      //function(data, status){
-      //$('#detail').html(data);
-    //});
+      $.get("/changeShift",
+      function(data, status){
+        console.log(data);
+      $('#display').html(data);
+    });
 }
   </script>
 </body>
