@@ -11,8 +11,8 @@ var postEncoding = express.urlencoded({extended: true});
 // db connection
 const { Pool } = require('pg')
 const pool = new Pool({
-  connectionString: heroku,
-  ssl: true
+  connectionString: local,
+  ssl: false
 });
 
 /* GET assignments home. */
@@ -93,7 +93,7 @@ router.get('/changeShift', async (req, res) => {
 // add new employee
 router.post('/addNew', async (req, res, next) => {
   console.log("ADD NEW WORKS!!");
-  var query = "INSERT INTO employees(employer_id, username, wage, hire_date, job) VALUES($1,$2, $3, $4, 5)";
+  var query = "INSERT INTO employees(employer_id, username, wage, hire_date, job) VALUES($1,$2, $3, $4, $5)";
   console.log(req.body);
   var params = [
     1,
