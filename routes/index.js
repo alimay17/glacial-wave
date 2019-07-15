@@ -1,14 +1,17 @@
 var express = require('express');
+var app = express();
 var router = express.Router();
 var pg = require('pg');
 var updateDB = require('../myModules/accessDB.js');
 var local = 'postgres://@localhost/project_njs'; // for local access
 var heroku = process.env.DATABASE_URL;
 
+var postEncoding = express.urlencoded({extended: true});
+
 // db connection
 const { Pool } = require('pg')
 const pool = new Pool({
-  connectionString: heroku,
+  connectionString: local,
   ssl: false
 });
 
@@ -23,16 +26,18 @@ router.get('/sphinxmanager', (req, res, next) => {
 });
 
 // login
-router.post('/login', (req, res, next) => {
+router.post('/login', postEncoding, (req, res, next) => {
+  console.log(req.body);
+  
   res.redirect('/sphinxhome');
 });
 
 // employer home
 router.get('/sphinxhome', async (req, res) => {
-  var display = "select shift, to_char(day, 'Mon dd'), username, job from shift_employee join employees on employee_id = employees.id order by day asc";
+  var query = "select shift, to_char(day, 'Mon dd'), username, job from shift_employee join employees on employee_id = employees.id order by day asc";
   try{
     const client = await pool.connect()
-    const result = await client.query(display);
+    const result = await client.query(query);
     const results = { 'results': (result) ? result.rows : null };
     console.log('connected to db');
     res.render('pages/sphinxHome.ejs', results);
@@ -46,10 +51,10 @@ router.get('/sphinxhome', async (req, res) => {
 // employees
 router.get('/employees', async (req, res) => {
 
-  var display = "select id, username, wage, job, to_char(hire_date, 'Mon dd yyyy') from employees";
+  var query = "select id, username, wage, job, to_char(hire_date, 'Mon dd yyyy') from employees";
   try{
     const client = await pool.connect()
-    const result = await client.query(display);
+    const result = await client.query(query);
     const results = { 'results': (result) ? result.rows : null };
     console.log('connected to db');
     res.render('pages/employees', results);
@@ -85,7 +90,7 @@ router.get('/changeShift', async (req, res) => {
 });
 
 // add new employee
-router.post('/addNew', async (req, res) => {
+router.post('/addNew', async (req, res, next) => {
   console.log("ADD NEW WORKS!!");
   var query = "INSERT INTO employees(employer_id, username, wage, hire_date, job) VALUES($1,$2, $3, $4, 5)";
   console.log(req.body);

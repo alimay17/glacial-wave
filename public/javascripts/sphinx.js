@@ -4,4 +4,5 @@ $('#login').submit(function() {
   function(data, status){
     $('#message').html(data);
   });
+  
 })
