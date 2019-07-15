@@ -11,8 +11,8 @@ var postEncoding = express.urlencoded({extended: true});
 // db connection
 const { Pool } = require('pg')
 const pool = new Pool({
-  connectionString: local,
-  ssl: false
+  connectionString: heroku,
+  ssl: true
 });
 
 /* GET assignments home. */
