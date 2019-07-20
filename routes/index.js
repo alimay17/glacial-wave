@@ -5,14 +5,14 @@ var pg = require('pg');
 var updateDB = require('../myModules/accessDB.js');
 var local = 'postgres://@localhost/project_njs'; // for local access
 var heroku = process.env.DATABASE_URL;
-
 var postEncoding = express.urlencoded({extended: true});
+
 
 // db connection
 const { Pool } = require('pg')
 const pool = new Pool({
-  connectionString: heroku,
-  ssl: true
+  connectionString: local,
+  ssl: false
 });
 
 /* GET assignments home. */
@@ -34,7 +34,7 @@ router.post('/login', postEncoding, (req, res, next) => {
 
 // employer home
 router.get('/sphinxhome', async (req, res) => {
-  var query = "select shift, to_char(day, 'Mon dd'), username, job from shift_employee join employees on employee_id = employees.id order by day asc";
+  var query = "select shift, to_char(day, 'Mon dd yyyy'), username, job from shift_employee left outer join employees on employee_id = employees.id order by day asc";
   try{
     const client = await pool.connect()
     const result = await client.query(query);
@@ -83,6 +83,27 @@ router.get('/changeShift', async (req, res) => {
     const results = { 'results': (result) ? result.rows : null };
     console.log('Update sucessfull');
     res.send(results);
+    client.release();
+  } catch(err) {
+    console.log(err);
+    res.send("Error " + err);
+  }
+});
+
+// add new shift
+router.post('/newShift', async (req, res) => {
+  console.log(req.body);
+  var query = 'INSERT INTO shift_employee(shift, day) VALUES ($1, $2)'
+  var params = [
+    req.body.shift,
+    req.body.day
+  ]
+  try{
+    const client = await pool.connect()
+    const result = await client.query(query, params);
+    const results = { 'results': (result) ? result.rows : null };
+    console.log('connected to db');
+    res.redirect('/sphinxhome');
     client.release();
   } catch(err) {
     console.log(err);
