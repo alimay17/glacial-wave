@@ -13,17 +13,19 @@
     <h1>Sphinx Manager</h1>
     <p>Tools for employee managment and scheduling</p>
     <a type="button" class="btn btn-lg btn-primary" href="/sphinxhome"></span>Return to Scheduling</a>
-    <button class="btn btn-lg btn-default" data-toggle="collapse" data-target="#addNew"><span class="glyphicon glyphicon-flash"></span>Add New Employee</button>
   </div>
 </div>
 <div class="container">
   <h1>Employee Managment</h1>
   <p><i>Currently under construction - some functionality is broken</i></p>
-  <p>Click on an employee's name to edit their details.</p>
   <div class="row">
     <div id="employeeTable" class="col-md-12">
       <table>
+        <button class="btn btn-md btn-default" data-toggle="collapse" data-target="#addNew"><span class="glyphicon glyphicon-flash"></span>Add New Employee</button>
+        <form action="/deleteEmp" method="POST">
+        <button class="btn btn-md btn-default" name="del" value="del"><span class="glyphicon glyphicon-flash"></span>Delete Employee</button> 
         <tr>
+          <th>Select</th>
           <th>Employee Name</th>
           <th>Position</th>
           <th>Wage</th>
@@ -31,13 +33,15 @@
         </tr>
         <% results.forEach(function(r) { %>
           <tr>
-          <td><a href="#" onclick="getDetail(<%= r.id %>)"><%= r.username %></a></td>
+          <td><input type="radio" name="id" value="<%= r.id%>"/></td>
+          <td><%= r.username %></td>
           <td><%= r.job%></td>
           <td>$<%= r.wage%></td>
           <td><%= r.to_char%></td>
 
           </tr>
       <% }); %>
+        </form>
       </table>
     </div>
   </div> <!--End Row-->

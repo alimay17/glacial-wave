@@ -27,8 +27,14 @@ router.get('/sphinxmanager', (req, res, next) => {
 
 // login
 router.post('/login', postEncoding, (req, res, next) => {
-  console.log(req.body);
-  res.redirect('/sphinxhome');
+  var username = req.body.username;
+  var password = req.body.password;
+  if(username && password){
+    res.redirect('/sphinxhome')
+  }
+  else{
+    res.redirect('/sphinxmanager');
+  }
 });
 
 // employer home
@@ -130,7 +136,7 @@ router.post('/addToShift', (req, res) => {
   }
   else if(del){
     shifts.forEach(s => {
-      delEmployees(s);
+      removeEmp(s);
     });
   }
   res.redirect('/sphinxhome');
@@ -182,18 +188,11 @@ router.post('/addNew', async (req, res, next) => {
   }
 });
 
-// get employee details
-router.get('/detail', (req, res) => {
-  var id = req.query.id;
-  var result = updateDB.getDetail(id);
-  console.log(result);
-  console.log("stupid async! " + id);
-  res.render('partials/details.ejs');
-})
-
-// edit employee data
-router.post('/changeEdata', (req, res) => {
-  console.log(req.body);
+// delete employees
+router.post('/deleteEmp', (req, res) => {
+  var empID = req.body.id;
+  console.log(empID);
+  deleteEmp(empID);
   res.redirect('/employees');
 });
 
@@ -274,7 +273,7 @@ async function addEmployees(shift, i){
 /**********************************************
  * deletes selected employee from selected shift
  **********************************************/
-async function delEmployees(shift){
+async function removeEmp(shift){
   console.log("removing from shift" + shift);
   var query = 'UPDATE shift_employee SET employee_id = null WHERE shift_id = $1;';
   var params = [shift];
@@ -288,4 +287,47 @@ async function delEmployees(shift){
     console.log(err);
     res.send("Error " + err);
   }
+}
+
+/**********************************************
+ * deletes selected employee from all shifts
+ **********************************************/
+async function removeEmpAll(id, callback){
+  console.log("removing from shifts");
+  var query = 'UPDATE shift_employee SET employee_id = null WHERE employee_id = $1;';
+  var params = [id];
+  try{
+    const client = await pool.connect()
+    const result = await client.query(query, params);
+    const results = { 'results': (result) ? result.rows : null };
+    console.log("removed from all shifts");
+    callback();
+    client.release();
+  } catch(err) {
+    console.log(err);
+    res.send("Error " + err);
+  }
+}
+
+/**********************************************
+ * deletes selected employee from database
+ **********************************************/
+async function deleteEmp(i){
+  console.log("deleting emp " + i);
+  var query = 'DELETE FROM employees WHERE id = $1';
+  var params = [i];
+
+  console.log("checking if employee is assigned a shift");
+    removeEmpAll(i, async function(){
+      try{
+        const client = await pool.connect()
+        const result = await client.query(query, params);
+        const results = { 'results': (result) ? result.rows : null };
+        console.log("deleted emp " + i);
+        client.release();
+      } catch(err) {
+        console.log(err);
+        res.send("Error " + err);
+      }
+  });
 }
