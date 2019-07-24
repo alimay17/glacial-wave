@@ -5,14 +5,11 @@
   <% include ../partials/header.ejs %>
 </head>
 <body>
-
   <% include ../partials/nav.ejs %>
-
 <div class="jumbotron text-center">
   <div class="container">
     <h1>Sphinx Manager</h1>
     <p>Tools for employee managment and scheduling</p>
-    <button class="btn btn-lg btn-default" data-toggle="collapse" data-target="#changeForm"><span class="glyphicon glyphicon-flash"></span>Change Schedule</button>
     <a type="button" class="btn btn-lg btn-primary" href="/employees"></span>Manage Employees</a>
   </div>
 </div>
@@ -20,9 +17,14 @@
   <h1>Shedule</h1>
   <p><i>Currently under construction - some functionality is broken</i></p>
   <div class="row">
-    <div id="employeeTable" class="col-md-6">
+    <div id="employeeTable" class="col-md-12">
+      <button class="btn btn-md btn-default" data-toggle="collapse" data-target="#newShift"><span class="glyphicon glyphicon-flash"></span>Add Shift</button>
       <table>
+        <form action="/editShift" method="POST">
+        <button class="btn btn-md btn-default" name="edit" value="edit"><span class="glyphicon glyphicon-flash"></span>Edit Shift</button> 
+        <button class="btn btn-md btn-default" name="del" value="del"><span class="glyphicon glyphicon-flash"></span>Remove Shift</button>
         <tr>
+          <th>Select</th>
           <th>Employee Name</th>
           <th>Position</th>
           <th>Day</th>
@@ -30,22 +32,19 @@
         </tr>
         <% results.forEach(function(r) { %>
           <tr>
+          <td><input type="checkbox" name="shift[]" value="<%= r.shift_id%>"/></td>
           <td><%= r.username %></td>
           <td><%= r.job %></td>
           <td><%= r.to_char%></td>
           <td><%= r.shift%></td>
           </tr>
       <% }); %>
+        </form>
       </table>
     </div>
     </div> <!--End Row-->
   <div class="row">
-    <div id="changeForm" class="collapse"><hr/>
-      <button class="btn btn-md btn-primary" onclick="editShift()">Add Employee to Shift</button>
-      <button class="btn btn-md btn-primary" data-toggle="collapse" data-target="#newShift">Add New Shift</button>
-    </div>
     <div id="display">
-
     </div>
     <div id="newShift" class="collapse"><% include ../partials/newShift.ejs %>
     </div>
@@ -53,16 +52,25 @@
     <% include ../partials/footer.ejs %>
 </div>
 
-
 <script>
-    function editShift() {
-    console.log("This is editSchedule");
-      $.get("/changeShift",
-      function(data, status){
-        console.log(data);
-      $('#display').html(data);
-    });
+  function editShift() {
+  console.log("This is editSchedule");
+    $.get("/changeShift",
+    function(data, status){
+      console.log(data);
+    $('#display').html(data);
+  });
 }
-  </script>
+
+function removeShift(shiftID) {
+console.log("It works cause here is the shift_id " + shiftID);
+$.post("/removeShift",
+  {shiftID: shiftID},
+  function(){
+    console.log("It works");
+    location.reload(true);
+  })
+}
+</script>
 </body>
 </html>
