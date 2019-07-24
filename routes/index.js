@@ -2,20 +2,10 @@ var express = require('express');
 var app = express();
 var router = express.Router();
 var pg = require('pg');
-var updateDB = require('../myModules/accessDB.js');
-var local = 'postgres://@localhost/project_njs'; // for local access
-var heroku = process.env.DATABASE_URL;
-
+var db = require('../myModules/accessDB.js');
 var postEncoding = express.urlencoded({extended: true});
 
-// db connection
-const { Pool } = require('pg')
-const pool = new Pool({
-  connectionString: heroku,
-  ssl: true
-});
-
-/* GET assignments home. */
+// assignments home.
 router.get('/', (req, res, next) => {
   res.render('pages/index');
 });
@@ -27,74 +17,102 @@ router.get('/sphinxmanager', (req, res, next) => {
 
 // login
 router.post('/login', postEncoding, (req, res, next) => {
-  console.log(req.body);
-  
-  res.redirect('/sphinxhome');
+  var username = req.body.username;
+  var password = req.body.password;
+  if(username && password){
+    res.redirect('/sphinxhome')
+  }
+  else{
+    res.redirect('/sphinxmanager');
+  }
 });
 
 // employer home
 router.get('/sphinxhome', async (req, res) => {
-  var query = "select shift, to_char(day, 'Mon dd'), username, job from shift_employee join employees on employee_id = employees.id order by day asc";
-  try{
-    const client = await pool.connect()
-    const result = await client.query(query);
-    const results = { 'results': (result) ? result.rows : null };
-    console.log('connected to db');
+  db.getSchedule(function(results){
     res.render('pages/sphinxHome.ejs', results);
-    client.release();
-  } catch(err) {
-    console.log(err);
-    res.send("Error " + err);
-  }
+  })
 });
 
 // employees
 router.get('/employees', async (req, res) => {
-
-  var query = "select id, username, wage, job, to_char(hire_date, 'Mon dd yyyy') from employees";
-  try{
-    const client = await pool.connect()
-    const result = await client.query(query);
-    const results = { 'results': (result) ? result.rows : null };
-    console.log('connected to db');
-    res.render('pages/employees', results);
-    client.release();
-  } catch(err) {
-    console.log(err);
-    res.send("Error " + err);
-  }
+    db.employeeManage(function(results){
+      res.render('pages/employees', results);
+    });
 });
 
-// get employee details
-router.get('/detail', (req, res) => {
-  var id = req.query.id;
-  var result = updateDB.getDetail(id);
-  console.log(result);
-  console.log("stupid async! " + id);
-  res.render('partials/details.ejs');
+// edit shift
+router.post('/editShift', (req, res) => {
+  console.log(req.body.edit);
+  console.log(req.body.del);
+  var shifts = req.body;
+  var shifts = shifts['shift[]'];
+  console.log(shifts);
+
+  // if delete is selected
+  if(req.body.del){
+
+    // if multiple deletes
+    if(Array.isArray(shifts)){
+    shifts.forEach (s =>{
+      console.log(s);
+      db.deleteShift(s);
+    })
+  }
+    // just one
+    else(db.deleteShift(shifts));
+
+    // refresh page
+    res.redirect('/sphinxhome');
+  }
+
+  // if edit is selected go to the edit shift page
+  else{
+    console.log("get list of employees");
+    db.getEmployeeList(function(empList){
+      empList = empList.results;
+      var results = new Object();
+      results.empList = empList;
+      results.shifts = shifts;
+      console.log(results);
+      res.render('pages/editShift.ejs', results);
+    });
+  }
 })
 
-// change shift
-router.get('/changeShift', async (req, res) => {
-  var query = "select id, username, wage, job, to_char(hire_date, 'Mon dd yyyy') from employees";
-  try{
-    const client = await pool.connect()
-    const result = await client.query(query);
-    const results = { 'results': (result) ? result.rows : null };
-    console.log('Update sucessfull');
-    res.send(results);
-    client.release();
-  } catch(err) {
-    console.log(err);
-    res.send("Error " + err);
+// add or remove employees from shift
+router.post('/addToShift', (req, res) => {
+  var shifts = JSON.parse("[" + req.body.shifts + "]");
+  var empID = req.body.empID;
+  var add = req.body.add;
+  var del = req.body.del;
+
+  if(add){
+    shifts.forEach(s => {
+      db.addEmployees(s, empID);
+    });
   }
+  else if(del){
+    shifts.forEach(s => {
+      db.removeEmp(s);
+    });
+  }
+  res.redirect('/sphinxhome');
+});
+
+// add new shift
+router.post('/newShift', async (req, res) => {
+  var params = [
+    req.body.shift,
+    req.body.day
+  ]
+  db.newShift(params, function(){
+    res.redirect('/sphinxhome');
+  })
 });
 
 // add new employee
 router.post('/addNew', async (req, res, next) => {
-  console.log("ADD NEW WORKS!!");
-  var query = "INSERT INTO employees(employer_id, username, wage, hire_date, job) VALUES($1,$2, $3, $4, $5)";
-  console.log(req.body);
   var params = [
     1,
     req.body.name,
@@ -102,20 +120,20 @@ router.post('/addNew', async (req, res, next) => {
     req.body.hireDate,
     req.body.position
   ]
-  try{
-    const client = await pool.connect()
-    const result = await client.query(query, params);
-    const results = { 'results': (result) ? result.rows : null };
-    console.log('connected to db');
+  db.newEmployee(params, function(){
     res.redirect('/employees');
-    client.release();
-  } catch(err) {
-    console.log(err);
-    res.send("Error " + err);
-  }
+  })
 });
 
-// get rates from previous assignment. 
+// delete employees
+router.post('/deleteEmp', (req, res) => {
+  var empID = req.body.id;
+  console.log(empID);
+  db.deleteEmp(empID);
+  res.redirect('/employees');
+});
+
+// get rates for postage calculator 
 router.get('/getRate', (req, res) => {
   var rates = require('../myModules/rates');
   var data = {
