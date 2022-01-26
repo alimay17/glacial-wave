@@ -1,4 +1,4 @@
-# nodeJS
+# glacial-wave
 CS-313 student projects using nodejs
 Sphinx Employee Managemnt Application
 ## Stack
